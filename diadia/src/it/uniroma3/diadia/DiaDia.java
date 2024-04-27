@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 import it.uniroma3.diadia.ambienti.Stanza;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
+import it.uniroma3.diadia.comandi.Comando;
+import it.uniroma3.diadia.comandi.FabbricaDiComandi;
 
 /**
  * Classe principale di diadia, un semplice gioco di ruolo ambientato al dia.
@@ -33,11 +35,11 @@ public class DiaDia {
 	static final private String[] elencoComandi = {"vai", "aiuto", "fine"};
 
 	private Partita partita;
-	private IOConsole io;
+	private IO io;
 
-	public DiaDia() {
+	public DiaDia(IO console) {
 		this.partita = new Partita();
-		this.io = new IOConsole();
+		this.io = console;
 	}
 
 	public void gioca() {
@@ -57,7 +59,23 @@ public class DiaDia {
 	 * @return true se l'istruzione e' eseguita e il gioco continua, false altrimenti
 	 */
 	private boolean processaIstruzione(String istruzione) {
-		Comando comandoDaEseguire = new Comando(istruzione);
+//		Comando comandoDaEseguire = new Comando(istruzione);
+		
+		//slide pagina 7
+		Comando comandoDaEseguire;
+		FabbricaDiComandi factory = new FabbricaDiComandi()
+
+		comandoDaEseguire = factory.costruisciComando(istruzione);
+		comandoDaEseguire.esegui(this.partita); 
+		if (this.partita.vinta())
+			System.out.println("Hai vinto!");
+		if (!this.partita.giocatoreIsVivo())
+			System.out.println("Hai esaurito i CFU...");
+		return this.partita.isFinita();
+				 
+				 
+				 
+				 
 
 		if (comandoDaEseguire.getNome().equals("fine")) {
 			this.fine(); 
@@ -152,8 +170,8 @@ public class DiaDia {
 	}
 
 	public static void main(String[] argc) {
-		IOConsole io = new IOConsole();
-		DiaDia gioco = new DiaDia();
+		IO console = new IOConsole();
+		DiaDia gioco = new DiaDia(console);
 		gioco.gioca();
 	}
 }
